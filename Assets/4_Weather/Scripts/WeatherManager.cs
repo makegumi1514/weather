@@ -27,7 +27,7 @@ public class WeatherManager : MonoBehaviour {
             string json = www.text;
 
             // 1層目
-            Dictionary<string, object> jsonData = (Dictionary<string, object>)Json.Deserialize(json);
+            IDictionary jsonData = (IDictionary)Json.Deserialize(json);
             // 2層目
             string country = (string)jsonData["base"];
             IList main = (IList)jsonData["main"];
@@ -44,6 +44,8 @@ public class WeatherManager : MonoBehaviour {
                 city.weather = (string)dic["weather"];
                 cityList.Add(city);
             }
+            Debug.Log("city:" + cityList[0].city + " weather" + cityList[0].weather);
+
             GameObject japan = GameObject.Find("Japan");
             for (int i = 0; i < japan.transform.childCount; i++) {
                 japan.transform.GetChild(i).gameObject.SetActive(true);

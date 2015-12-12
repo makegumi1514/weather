@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MiniJSON;
 
-public class BottonEvent : MonoBehaviour {
+public class ButtonEvent : MonoBehaviour {
 
     public WeatherManager manager;
 
@@ -16,9 +16,9 @@ public class BottonEvent : MonoBehaviour {
         if (www.error == null) {
             string json = www.text;
             // 1層目
-            Dictionary<string, object> jsonData = (Dictionary<string, object>)Json.Deserialize(json);
+            IDictionary jsonData = (IDictionary)Json.Deserialize(json);
             // 2層目
-            Dictionary<string, object> main = (Dictionary<string, object>)jsonData["main"];
+            IDictionary main = (IDictionary)jsonData["main"];
             // 3層目
             string city = (string)main["city"];
             string weather = (string)main["weather"];
