@@ -23,9 +23,10 @@ public class ButtonEvent : MonoBehaviour {
             string city = (string)main["city"];
             string weather = (string)main["weather"];
             Debug.Log("city:" + city + " weather:" + weather);
-            City c = manager.cityList[number - 2];
+            City c = new City();
+            c.city = city;
             c.weather = weather;
-            manager.SetIcon();
+            manager.SetIcon(c);
         }
     }
 

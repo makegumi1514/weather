@@ -7,14 +7,13 @@ using MiniJSON;
 
 public class WeatherManager : MonoBehaviour {
 
-    private string url = "http://necknecco.co.jp/jsontest/weather.php?id=0";
+    private const string url = "http://necknecco.co.jp/jsontest/weather.php?id=0";
 
-    public Sprite[] sprites = new Sprite[5];
-    public IList<IDictionary> dicList;
-    public IList<City> cityList;
+    [SerializeField]
+    private Sprite[] sprites = new Sprite[5];
 
     void Start() {
-        StartCoroutine("SetWeather");
+        StartCoroutine(SetWeather());
     }
 
     IEnumerator SetWeather() {
@@ -24,6 +23,12 @@ public class WeatherManager : MonoBehaviour {
         if (www.error == null) {
             Debug.Log(www.text);
 
+            // 初期化処理
+            GameObject japan = GameObject.Find("Japan");
+            for (int i = 0; i < japan.transform.childCount; i++) {
+                japan.transform.GetChild(i).gameObject.SetActive(true);
+            }
+
             string json = www.text;
 
             // 1層目
@@ -32,35 +37,26 @@ public class WeatherManager : MonoBehaviour {
             string country = (string)jsonData["base"];
             IList main = (IList)jsonData["main"];
             // 3層目
-            dicList = new List<IDictionary>();
-            foreach (IDictionary dic in main) {
-                dicList.Add(dic);
+            IList<IDictionary> dictList = new List<IDictionary>();
+            foreach (IDictionary dict in main) {
+                dictList.Add(dict);
             }
             // 4層目
-            cityList = new List<City>();
-            foreach (IDictionary dic in dicList) {
+            foreach (IDictionary dict in dictList) {
                 City city = new City();
-                city.city = (string)dic["city"];
-                city.weather = (string)dic["weather"];
-                cityList.Add(city);
+                city.city = (string)dict["city"];
+                city.weather = (string)dict["weather"];
+                SetIcon(city);
+                Debug.Log("city:" + city.city + " weather" + city.weather);
             }
-            Debug.Log("city:" + cityList[0].city + " weather" + cityList[0].weather);
-
-            GameObject japan = GameObject.Find("Japan");
-            for (int i = 0; i < japan.transform.childCount; i++) {
-                japan.transform.GetChild(i).gameObject.SetActive(true);
-            }
-            SetIcon();
         }
     }
 
-    public void SetIcon() {
-        foreach (City city in cityList) {
-            GameObject obj = GameObject.Find(city.city);
-            Image objImg = null;
-            if (obj != null) {
-                objImg = obj.GetComponent<Image>();
-            }
+    public void SetIcon(City city) {
+        GameObject obj = GameObject.Find(city.city);
+        Image objImg = null;
+        if (obj != null) {
+            objImg = obj.GetComponent<Image>();
             switch (city.weather) {
                 case "晴":
                     objImg.sprite = sprites[0];
