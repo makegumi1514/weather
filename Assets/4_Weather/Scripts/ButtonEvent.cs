@@ -31,6 +31,6 @@ public class ButtonEvent : MonoBehaviour {
     }
 
     public void OnClick(int number) {
-        StartCoroutine("ClickCity", number);
+        StartCoroutine(ClickCity(number));
     }
 }
